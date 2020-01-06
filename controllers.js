@@ -27,9 +27,37 @@ exports.updateScore = async (req, res, next) => {
     const match = await Match.findById("5e0fc48d07e161161c0d4ed2");
     const team = match.teams[teamIndex];
     team.gameScore += amount;
-    (team.totalScore += amount), 10;
-    io.getIO().emit("update-score", {
-      action: `updateTeam${teamIndex}Score`,
+    team.totalScore += amount;
+    io.getIO().emit("match", {
+      action: "updateTeamScore",
+      teamIndex,
+      team
+    });
+    await match.save();
+    res.status(200).json({ message: "success" });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.updateTeamName = async (req, res, next) => {
+  const { name, teamIndex } = req.body;
+  try {
+    if (!name || (!teamIndex && teamIndex !== 0)) {
+      const error = new Error(
+        "A new name and the teams index is required to do this action"
+      );
+      error.statusCode = 422;
+      throw error;
+    }
+    const match = await Match.findById("5e0fc48d07e161161c0d4ed2");
+    const team = match.teams[teamIndex];
+    team.name = name;
+    io.getIO().emit("match", {
+      action: "updateTeamName",
       teamIndex,
       team
     });
