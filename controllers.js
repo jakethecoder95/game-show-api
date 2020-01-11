@@ -85,6 +85,10 @@ exports.newGame = async (req, res, next) => {
     }
     match.games.push(newGameName);
     match.gamesPlayed++;
+    io.getIO().emit("match", {
+      action: "newGame",
+      updatedMatch
+    });
     await match.save();
     res.status(200).json(match);
   } catch (err) {
