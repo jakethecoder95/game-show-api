@@ -80,14 +80,18 @@ exports.newGame = async (req, res, next) => {
   }
   try {
     const match = await Match.findById("5e0fc48d07e161161c0d4ed2");
-    for (let i = 0; i < match.teams.length; i++) {
-      match.teams[i].gameScore = 0;
+    const oldGameName = match.games[match.gamesPlayed];
+    const gameScores = [];
+    for (let team of match.teams) {
+      gameScores.push({ teamName: team.name, score: team.gameScore });
+      team.gameScore = 0;
     }
+    match.gameHistory.push({ name: oldGameName, scores: gameScores });
     match.games.push(newGameName);
     match.gamesPlayed++;
     io.getIO().emit("match", {
       action: "newGame",
-      updatedMatch
+      updatedMatch: match
     });
     await match.save();
     res.status(200).json(match);

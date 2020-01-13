@@ -18,7 +18,27 @@ const matchSchema = new Schema({
       type: String
     }
   ],
-  gamesPlayed: { type: Number, required: true, default: 0 }
+  gamesPlayed: { type: Number, required: true, default: 0 },
+  gameHistory: [
+    {
+      name: {
+        type: String,
+        required: true
+      },
+      scores: [
+        {
+          teamName: {
+            type: String,
+            required: true
+          },
+          score: {
+            type: Number,
+            required: true
+          }
+        }
+      ]
+    }
+  ]
 });
 
 module.exports = mongoose.model("Match", matchSchema);
