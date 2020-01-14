@@ -114,11 +114,14 @@ exports.addPhrase = async (req, res, next) => {
       throw error;
     }
     const match = await Match.findById("5e0fc48d07e161161c0d4ed2");
-    match.wheelOfBlessings.phrases.push({ phrase: newPhrase, catagory });
+    match.wheelOfBlessings.phrases.push({
+      phrase: newPhrase.trim(),
+      catagory: catagory.trim()
+    });
     io.getIO().emit("wheelOfBlessings", {
       action: "addPhrase",
-      newPhrase,
-      catagory
+      newPhrase: newPhrase.trim(),
+      catagory: catagory.trim()
     });
     match.save();
     res.status(200).json({ message: "Phrase added successfully", match });
@@ -141,10 +144,10 @@ exports.addLetter = async (req, res, next) => {
       throw error;
     }
     const match = await Match.findById("5e0fc48d07e161161c0d4ed2");
-    match.wheelOfBlessings.guessedLetters.push(newLetter);
+    match.wheelOfBlessings.guessedLetters.push(newLetter.trim());
     io.getIO().emit("wheelOfBlessings", {
       action: "addLetter",
-      newLetter
+      newLetter: newLetter.trim()
     });
     match.save();
     res.status(200).json({ message: "Letter added successfully" });
