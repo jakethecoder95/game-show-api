@@ -38,7 +38,17 @@ const matchSchema = new Schema({
         }
       ]
     }
-  ]
+  ],
+  wheelOfBlessings: {
+    phrases: [
+      {
+        phrase: { type: String, required: true },
+        catagory: { type: String, required: true }
+      }
+    ],
+    guessedLetters: [{ type: String }],
+    phrasesPlayed: { type: Number, required: true, default: 0 }
+  }
 });
 
 module.exports = mongoose.model("Match", matchSchema);

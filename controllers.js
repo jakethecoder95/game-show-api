@@ -102,3 +102,74 @@ exports.newGame = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.addPhrase = async (req, res, next) => {
+  const { newPhrase, catagory } = req.body;
+  try {
+    if (!newPhrase || !catagory) {
+      const error = new Error(
+        "No newPhrase or catagory given.  Please add newPhrase and catagory variable to the request body"
+      );
+      error.statusCode = 422;
+      throw error;
+    }
+    const match = await Match.findById("5e0fc48d07e161161c0d4ed2");
+    match.wheelOfBlessings.phrases.push({ phrase: newPhrase, catagory });
+    io.getIO().emit("wheelOfBlessings", {
+      action: "addPhrase",
+      newPhrase,
+      catagory
+    });
+    match.save();
+    res.status(200).json({ message: "Phrase added successfully", match });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.addLetter = async (req, res, next) => {
+  const { newLetter } = req.body;
+  try {
+    if (!newLetter) {
+      const error = new Error(
+        "No newLetter given.  Please add newLetter variable to the request body"
+      );
+      error.statusCode = 422;
+      throw error;
+    }
+    const match = await Match.findById("5e0fc48d07e161161c0d4ed2");
+    match.wheelOfBlessings.guessedLetters.push(newLetter);
+    io.getIO().emit("wheelOfBlessings", {
+      action: "addLetter",
+      newLetter
+    });
+    match.save();
+    res.status(200).json({ message: "Letter added successfully" });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.nextPhrase = async (req, res, next) => {
+  try {
+    const match = await Match.findById("5e0fc48d07e161161c0d4ed2");
+    match.wheelOfBlessings.guessedLetters = [];
+    match.wheelOfBlessings.phrasesPlayed++;
+    io.getIO().emit("wheelOfBlessings", {
+      action: "nextPhrase"
+    });
+    match.save();
+    res.status(200).json({ message: "Success" });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
