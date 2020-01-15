@@ -144,13 +144,28 @@ exports.addLetter = async (req, res, next) => {
       throw error;
     }
     const match = await Match.findById("5e0fc48d07e161161c0d4ed2");
-    match.wheelOfBlessings.guessedLetters.push(newLetter.trim());
-    io.getIO().emit("wheelOfBlessings", {
-      action: "addLetter",
-      newLetter: newLetter.trim()
-    });
+    const hasBeenGuessed =
+      match.wheelOfBlessings.guessedLetters.indexOf(newLetter) !== -1;
+    if (!hasBeenGuessed) {
+      match.wheelOfBlessings.guessedLetters.push(newLetter.trim());
+      io.getIO().emit("wheelOfBlessings", {
+        action: "addLetter",
+        newLetter: newLetter.trim()
+      });
+    }
+    const phraseArr = match.wheelOfBlessings.phrases[
+      match.wheelOfBlessings.phrasesPlayed
+    ].phrase.split("");
+    const letterOccurrences = phraseArr.reduce(
+      (cnt, letter) => cnt + (letter === newLetter),
+      0
+    );
+    console.log(letterOccurrences);
     match.save();
-    res.status(200).json({ message: "Letter added successfully" });
+    res.status(200).json({
+      message: "Letter added successfully",
+      letterOccurrences: hasBeenGuessed ? 0 : letterOccurrences
+    });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
