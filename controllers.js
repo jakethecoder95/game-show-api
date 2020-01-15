@@ -157,7 +157,7 @@ exports.addLetter = async (req, res, next) => {
       match.wheelOfBlessings.phrasesPlayed
     ].phrase.split("");
     const letterOccurrences = phraseArr.reduce(
-      (cnt, letter) => cnt + (letter === newLetter),
+      (cnt, letter) => cnt + (letter.toLowerCase() === newLetter.toLowerCase()),
       0
     );
     console.log(letterOccurrences);
