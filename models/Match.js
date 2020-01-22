@@ -48,6 +48,24 @@ const matchSchema = new Schema({
     ],
     guessedLetters: [{ type: String }],
     phrasesPlayed: { type: Number, required: true, default: 0 }
+  },
+  pressYourLuck: {
+    teams: [
+      {
+        name: { type: String, required: true },
+        spins: { type: Number, required: true, default: 0 }
+      }
+    ],
+    activeTeam: {
+      type: Number,
+      required: true,
+      default: 0
+    },
+    shuffling: {
+      type: Boolean,
+      required: true,
+      default: false
+    }
   }
 });
 
