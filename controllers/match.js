@@ -27,7 +27,6 @@ exports.updateScore = async (req, res, next) => {
     const match = await Match.findById("5e0fc48d07e161161c0d4ed2");
     const team = match.teams[teamIndex];
     team.gameScore += amount;
-    team.totalScore += amount;
     io.getIO().emit("match", {
       action: "updateTeamScore",
       teamIndex,
@@ -84,6 +83,7 @@ exports.newGame = async (req, res, next) => {
     const gameScores = [];
     for (let team of match.teams) {
       gameScores.push({ teamName: team.name, score: team.gameScore });
+      team.totalScore += team.gameScore;
       team.gameScore = 0;
     }
     match.gameHistory.push({ name: oldGameName, scores: gameScores });
