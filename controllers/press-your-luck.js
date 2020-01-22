@@ -106,7 +106,7 @@ exports.handleResults = async (req, res, next) => {
       team.gameScore + amount >= 0
         ? (match.teams[teamIndex].gameScore += amount)
         : (match.teams[teamIndex].gameScore = 0);
-      match.pressYourLuck.teams[teamIndex].spins = 0;
+      match.pressYourLuck.teams[teamIndex].spins -= 1;
     } else {
       match.teams[teamIndex].gameScore += amount;
     }
