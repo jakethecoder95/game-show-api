@@ -66,6 +66,24 @@ const matchSchema = new Schema({
       required: true,
       default: false
     }
+  },
+  theBiblesRight: {
+    answers: [
+      {
+        type: String,
+        required: true
+      }
+    ]
+  },
+  millionaireData: {
+    values: [{ type: Number }],
+    activeTeam: {
+      type: Number,
+      required: true,
+      default: 0
+    },
+    completed: { type: Number, required: true, default: 0 },
+    score: { type: Number, required: true, default: 0 }
   }
 });
 
