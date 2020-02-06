@@ -59,7 +59,10 @@ exports.nextTeam = async (req, res, next) => {
     io.getIO().emit("millionaire", {
       action: "nextTeam",
       millionaireData,
-      teamName: match.teams[millionaireData.activeTeam].name
+      teamName:
+        millionaireData.activeTeam < match.teams.length
+          ? match.teams[millionaireData.activeTeam].name
+          : ""
     });
     await match.markModified("millionaireData");
     await match.save();
